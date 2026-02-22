@@ -88,19 +88,19 @@ jobs:
         with:
           path: skia
           key: skia-${{ matrix.os }}-cache
-     # - name: Download Skia if not in cache
-     #   if: steps.skia-cache.outputs.cache-hit != 'true'
-     #   run: |
-     #     curl -o Skia-${{ runner.os }}-Release-X64.zip -L https://github.com/aseprite/skia/releases/download/m124-08a5439a6b/Skia-Windows-Debug-x64.zip
-     #     unzip Skia-${{ runner.os }}-Release-X64.zip -d skia
       - name: Download Skia if not in cache
         if: steps.skia-cache.outputs.cache-hit != 'true'
-        shell: cmd
         run: |
           curl -o Skia-${{ runner.os }}-Release-X64.zip -L https://github.com/aseprite/skia/releases/download/m124-08a5439a6b/Skia-Windows-Debug-x64.zip
-          mkdir skia
-          tar -xf Skia-Release.zip -C skia
-          for /r %GITHUB_WORKSPACE%\skia %i in (skia.lib) do copy "%i" %GITHUB_WORKSPACE%\skia\skia.lib
+          unzip Skia-${{ runner.os }}-Release-X64.zip -d skia
+     # - name: Download Skia if not in cache
+     #   if: steps.skia-cache.outputs.cache-hit != 'true'
+     #   shell: cmd
+     #   run: |
+     #     curl -o Skia-${{ runner.os }}-Release-X64.zip -L https://github.com/aseprite/skia/releases/download/m124-08a5439a6b/Skia-Windows-Debug-x64.zip
+     #     mkdir skia
+     #     tar -xf Skia-Release.zip -C skia
+     #     for /r %GITHUB_WORKSPACE%\skia %i in (skia.lib) do copy "%i" %GITHUB_WORKSPACE%\skia\skia.lib
         # :: This line finds skia.lib in any subfolder and moves it to the root of \skia
       - name: Locate Skia.lib
         shell: cmd
@@ -143,7 +143,9 @@ jobs:
            -DLAF_BACKEND=skia ^
            -DSKIA_DIR=%GITHUB_WORKSPACE%\skia ^
            -DSKIA_LIBRARY_DIR=%GITHUB_WORKSPACE%\skia ^
-           -DSKIA_LIBRARY=%GITHUB_WORKSPACE%\skia\skia.lib
+           -DSKIA_LIBRARY=%GITHUB_WORKSPACE%\skia\Skia-Release/skia.lib
+        #  above line changed the libary location, under is the original
+        #  -DSKIA_LIBRARY=%GITHUB_WORKSPACE%\skia\skia.lib
         #  -DSKIA_LIBRARY_DIR=%GITHUB_WORKSPACE%\skia\out\Release-x64 ^
         #  -DCMAKE_IGNORE_PATH="C:/ProgramData/chocolatey/bin/;C:/Strawberry/c/bin/"
       - name: (Ubuntu) Run CMake
