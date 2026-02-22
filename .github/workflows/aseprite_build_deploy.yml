@@ -109,11 +109,24 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: x64
+     # - name: (Windows) Run CMake
+     #   if: matrix.os == 'windows-latest'
+     #   working-directory: aseprite/build
+     #   shell: cmd
+     #   run: cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCMAKE_IGNORE_PATH='C:/ProgramData/chocolatey/bin/;C:/Strawberry/c/bin/' -DLAF_BACKEND=skia -DSKIA_DIR=../../skia -DSKIA_LIBRARY_DIR=../../skia/out/Release-x64 -G Ninja ..
       - name: (Windows) Run CMake
         if: matrix.os == 'windows-latest'
-        working-directory: aseprite/build
+        # We remove the 'working-directory' line here and handle it in the 'run' block for safety
         shell: cmd
-        run: cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCMAKE_IGNORE_PATH='C:/ProgramData/chocolatey/bin/;C:/Strawberry/c/bin/' -DLAF_BACKEND=skia -DSKIA_DIR=../../skia -DSKIA_LIBRARY_DIR=../../skia/out/Release-x64 -G Ninja ..
+        run: |
+          if not exist aseprite\build mkdir aseprite\build
+          cd aseprite\build
+          cmake -G Ninja .. ^
+           -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} ^
+           -DLAF_BACKEND=skia ^
+           -DSKIA_DIR=%GITHUB_WORKSPACE%\skia ^
+           -DSKIA_LIBRARY_DIR=%GITHUB_WORKSPACE%\skia\out\Release-x64 ^
+           -DCMAKE_IGNORE_PATH="C:/ProgramData/chocolatey/bin/;C:/Strawberry/c/bin/"
       - name: (Ubuntu) Run CMake
         if: matrix.os == 'ubuntu-latest'
         working-directory: aseprite/build
