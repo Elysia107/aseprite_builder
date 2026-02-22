@@ -93,6 +93,11 @@ jobs:
         run: |
           curl -o Skia-${{ runner.os }}-Release-X64.zip -L https://github.com/aseprite/skia/releases/download/m124-08a5439a6b/Skia-Windows-Debug-x64.zip
           unzip Skia-${{ runner.os }}-Release-X64.zip -d skia
+     # debug-step     
+      - name: List Skia folder contents
+        shell: cmd
+        run: dir /s %GITHUB_WORKSPACE%\skia
+        
       - name: Download Aseprite release
         run: |
           curl -o Aseprite-source.zip -L https://github.com/aseprite/aseprite/releases/download/v1.3.16/Aseprite-v1.3.16.1-Source.zip
@@ -125,8 +130,10 @@ jobs:
            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} ^
            -DLAF_BACKEND=skia ^
            -DSKIA_DIR=%GITHUB_WORKSPACE%\skia ^
-           -DSKIA_LIBRARY_DIR=%GITHUB_WORKSPACE%\skia\out\Release-x64 ^
-           -DCMAKE_IGNORE_PATH="C:/ProgramData/chocolatey/bin/;C:/Strawberry/c/bin/"
+           -DSKIA_LIBRARY_DIR=%GITHUB_WORKSPACE%\skia ^
+           -DSKIA_LIBRARY=%GITHUB_WORKSPACE%\skia\skia.lib
+        #  -DSKIA_LIBRARY_DIR=%GITHUB_WORKSPACE%\skia\out\Release-x64 ^
+        #  -DCMAKE_IGNORE_PATH="C:/ProgramData/chocolatey/bin/;C:/Strawberry/c/bin/"
       - name: (Ubuntu) Run CMake
         if: matrix.os == 'ubuntu-latest'
         working-directory: aseprite/build
