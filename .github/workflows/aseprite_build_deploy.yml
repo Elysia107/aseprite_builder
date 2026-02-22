@@ -106,7 +106,7 @@ jobs:
         if: steps.skia-cache.outputs.cache-hit != 'true'
         shell: pwsh
         run: |
-          $url = "https://github.com/aseprite/skia/releases/download/m102-861e474333/Skia-Win-Release-X64.zip"
+          $url = "https://github.com/aseprite/skia/releases/download/m124-08a5439a6b/Skia-Windows-Debug-x64.zip"
           Invoke-WebRequest -Uri $url -OutFile "Skia-Release.zip"
           if (!(Test-Path "skia")) { New-Item -ItemType Directory -Path "skia" }
           Expand-Archive -Path "Skia-Release.zip" -DestinationPath "skia" -Force 
