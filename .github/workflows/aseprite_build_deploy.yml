@@ -1,8 +1,8 @@
 name: Build and deploy Aseprite
 
 on:
-  schedule:
-    - cron: '7 5 12 * *'
+  #schedule:
+  #  - cron: '7 5 12 * *'
   push:
     branches:
       - master
@@ -88,11 +88,23 @@ jobs:
         with:
           path: skia
           key: skia-${{ matrix.os }}-cache
+     # - name: Download Skia if not in cache
+     #   if: steps.skia-cache.outputs.cache-hit != 'true'
+     #   run: |
+     #     curl -o Skia-${{ runner.os }}-Release-X64.zip -L https://github.com/aseprite/skia/releases/download/m124-08a5439a6b/Skia-Windows-Debug-x64.zip
+     #     unzip Skia-${{ runner.os }}-Release-X64.zip -d skia
       - name: Download Skia if not in cache
         if: steps.skia-cache.outputs.cache-hit != 'true'
+        shell: cmd
         run: |
           curl -o Skia-${{ runner.os }}-Release-X64.zip -L https://github.com/aseprite/skia/releases/download/m124-08a5439a6b/Skia-Windows-Debug-x64.zip
-          unzip Skia-${{ runner.os }}-Release-X64.zip -d skia
+          mkdir skia
+          tar -xf Skia-Release.zip -C skia
+          :: This next line finds skia.lib in any subfolder and moves it to the root of \skia
+          for /r %GITHUB_WORKSPACE%\skia %i in (skia.lib) do copy "%i" %GITHUB_WORKSPACE%\skia\skia.lib
+      - name: Locate Skia.lib
+        shell: cmd
+        run: dir /s %GITHUB_WORKSPACE%\skia\skia.lib
      # debug-step     
       - name: List Skia folder contents
         shell: cmd
