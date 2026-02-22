@@ -100,8 +100,8 @@ jobs:
           curl -o Skia-${{ runner.os }}-Release-X64.zip -L https://github.com/aseprite/skia/releases/download/m124-08a5439a6b/Skia-Windows-Debug-x64.zip
           mkdir skia
           tar -xf Skia-Release.zip -C skia
-          :: This next line finds skia.lib in any subfolder and moves it to the root of \skia
           for /r %GITHUB_WORKSPACE%\skia %i in (skia.lib) do copy "%i" %GITHUB_WORKSPACE%\skia\skia.lib
+        # :: This line finds skia.lib in any subfolder and moves it to the root of \skia
       - name: Locate Skia.lib
         shell: cmd
         run: dir /s %GITHUB_WORKSPACE%\skia\skia.lib
