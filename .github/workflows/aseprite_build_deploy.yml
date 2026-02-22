@@ -88,11 +88,11 @@ jobs:
         with:
           path: skia
           key: skia-${{ matrix.os }}-cache
-      - name: Download Skia if not in cache
-        if: steps.skia-cache.outputs.cache-hit != 'true'
-        run: |
-          curl -o Skia-${{ runner.os }}-Release-X64.zip -L https://github.com/aseprite/skia/releases/download/m124-08a5439a6b/Skia-Windows-Debug-x64.zip
-          unzip Skia-${{ runner.os }}-Release-X64.zip -d skia
+     # - name: Download Skia if not in cache
+     #   if: steps.skia-cache.outputs.cache-hit != 'true'
+     #   run: |
+     #     curl -o Skia-${{ runner.os }}-Release-X64.zip -L https://github.com/aseprite/skia/releases/download/m124-08a5439a6b/Skia-Windows-Debug-x64.zip
+     #     unzip Skia-${{ runner.os }}-Release-X64.zip -d skia
      # - name: Download Skia if not in cache
      #   if: steps.skia-cache.outputs.cache-hit != 'true'
      #   shell: cmd
@@ -102,6 +102,22 @@ jobs:
      #     tar -xf Skia-Release.zip -C skia
      #     for /r %GITHUB_WORKSPACE%\skia %i in (skia.lib) do copy "%i" %GITHUB_WORKSPACE%\skia\skia.lib
         # :: This line finds skia.lib in any subfolder and moves it to the root of \skia
+      - name: Download Skia if not in cache
+        if: steps.skia-cache.outputs.cache-hit != 'true'
+        shell: pwsh
+        run: |
+          $url = "https://github.com/aseprite/skia/releases/download/m102-861e474333/Skia-Win-Release-X64.zip"
+          Invoke-WebRequest -Uri $url -OutFile "Skia-Release.zip"
+          if (!(Test-Path "skia")) { New-Item -ItemType Directory -Path "skia" }
+          Expand-Archive -Path "Skia-Release.zip" -DestinationPath "skia" -Force 
+          $libPath = Get-ChildItem -Path "skia" -Filter "skia.lib" -Recurse | Select-Object -ExpandProperty FullName -First 1
+          if ($libPath) {
+            Copy-Item -Path $libPath -Destination "skia\skia.lib" -Force
+            Write-Host "Success: Found and moved skia.lib to root of \skia"
+          } else {
+              Write-Error "Fatal: Could not find skia.lib inside the zip!"
+              exit 1
+          }
       - name: Locate Skia.lib
         shell: cmd
         run: dir /s %GITHUB_WORKSPACE%\skia\skia.lib
@@ -143,9 +159,8 @@ jobs:
            -DLAF_BACKEND=skia ^
            -DSKIA_DIR=%GITHUB_WORKSPACE%\skia ^
            -DSKIA_LIBRARY_DIR=%GITHUB_WORKSPACE%\skia ^
-           -DSKIA_LIBRARY=%GITHUB_WORKSPACE%\skia\out\Debug-x64\skia.lib
-        #  above line changed the libary location, under is the original
-        #  -DSKIA_LIBRARY=%GITHUB_WORKSPACE%\skia\skia.lib
+           -DSKIA_LIBRARY=%GITHUB_WORKSPACE%\skia\skia.lib
+        #  -DSKIA_LIBRARY=%GITHUB_WORKSPACE%\skia\out\Debug-x64\skia.lib
         #  -DSKIA_LIBRARY_DIR=%GITHUB_WORKSPACE%\skia\out\Release-x64 ^
         #  -DCMAKE_IGNORE_PATH="C:/ProgramData/chocolatey/bin/;C:/Strawberry/c/bin/"
       - name: (Ubuntu) Run CMake
