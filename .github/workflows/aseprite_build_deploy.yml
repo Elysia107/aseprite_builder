@@ -143,7 +143,7 @@ jobs:
            -DLAF_BACKEND=skia ^
            -DSKIA_DIR=%GITHUB_WORKSPACE%\skia ^
            -DSKIA_LIBRARY_DIR=%GITHUB_WORKSPACE%\skia ^
-           -DSKIA_LIBRARY=%GITHUB_WORKSPACE%\skia\Skia-Release/skia.lib
+           -DSKIA_LIBRARY=%GITHUB_WORKSPACE%\skia\out\Debug-x64\skia.lib
         #  above line changed the libary location, under is the original
         #  -DSKIA_LIBRARY=%GITHUB_WORKSPACE%\skia\skia.lib
         #  -DSKIA_LIBRARY_DIR=%GITHUB_WORKSPACE%\skia\out\Release-x64 ^
