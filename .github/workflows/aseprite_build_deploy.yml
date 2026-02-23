@@ -21,6 +21,7 @@ jobs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
     - name: List Root Directory
+      shell: cmd
       run: dir /s /b /ad %GITHUB_WORKSPACE%
     - name: log untrusted output
       run: |
