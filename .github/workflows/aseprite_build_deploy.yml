@@ -126,11 +126,20 @@ jobs:
         shell: cmd
         run: dir /s %GITHUB_WORKSPACE%\skia
         
-      - name: Download Aseprite release
-        run: |
-          curl -o Aseprite-source.zip -L https://github.com/aseprite/aseprite/releases/download/v1.3.16/Aseprite-v1.3.16.1-Source.zip
-          unzip Aseprite-source.zip -d aseprite
-          mkdir -p aseprite/build
+     # - name: Download Aseprite release
+     #   run: |
+     #     curl -o Aseprite-source.zip -L https://github.com/aseprite/aseprite/releases/download/v1.3.16/Aseprite-v1.3.16.1-Source.zip
+     #     unzip Aseprite-source.zip -d aseprite
+     #     mkdir -p aseprite/build
+      - name: Checkout Aseprite
+        uses: actions/checkout@v4
+        with:
+          repository: 'aseprite/aseprite'
+          # Use the specific version you want
+          ref: 'v1.3.16.1' 
+          # This is the "magic" line that fixes the missing library error
+          submodules: 'recursive'
+          path: 'aseprite'
       - name: (Windows) Set architecture for the produced binary
         if: matrix.os == 'windows-latest'
         shell: cmd
