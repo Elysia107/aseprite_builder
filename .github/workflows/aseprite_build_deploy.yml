@@ -139,7 +139,13 @@ jobs:
           ref: 'v1.3.16.1' 
           # This is the "magic" line that fixes the missing library error
           submodules: 'recursive'
+          fetch-depth: 0
           path: 'aseprite'
+      - name: Manual Submodule Update
+        working-directory: aseprite
+        run: |
+          git submodule sync --recursive
+          git submodule update --init --recursive
       - name: (Windows) Set architecture for the produced binary
         if: matrix.os == 'windows-latest'
         shell: cmd
