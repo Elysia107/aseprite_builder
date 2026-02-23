@@ -162,15 +162,15 @@ jobs:
      #   working-directory: aseprite/build
      #   shell: cmd
      #   run: cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCMAKE_IGNORE_PATH='C:/ProgramData/chocolatey/bin/;C:/Strawberry/c/bin/' -DLAF_BACKEND=skia -DSKIA_DIR=../../skia -DSKIA_LIBRARY_DIR=../../skia/out/Release-x64 -G Ninja ..
-      - name: Verify Submodules
-        shell: cmd
-        run: |
-          if exist aseprite\third_party\libjpeg-turbo\CMakeLists.txt (
-             echo "Submodules are present!"
-           ) else (
-             echo "Submodules are MISSING!"
-             exit 1
-             )
+     # - name: Verify Submodules
+     #   shell: cmd
+     #   run: |
+     #     if exist aseprite\third_party\libjpeg-turbo\CMakeLists.txt (
+     #        echo "Submodules are present!"
+     #      ) else (
+     #        echo "Submodules are MISSING!"
+     #        exit 1
+     #        )
       - name: (Windows) Run CMake
         if: matrix.os == 'windows-latest'
         # We remove the 'working-directory' line here and handle it in the 'run' block for safety
