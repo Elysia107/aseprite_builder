@@ -20,9 +20,8 @@ jobs:
       should_build: ${{ steps.should_build.outputs.should_build }}
       upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
-    - name: List Root Directory
-      shell: cmd
-      run: dir /s /b /ad %GITHUB_WORKSPACE%
+    - name: List Root Directory (Bash)
+      run: find . -maxdepth 3 -not -path '*/.*'
     - name: log untrusted output
       run: |
         echo "::stop-commands::`echo -n ${{ github.token }} | sha256sum | head -c 64`"
